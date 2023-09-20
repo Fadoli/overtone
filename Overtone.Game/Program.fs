@@ -1,11 +1,11 @@
-﻿module Overtone.Game.Program
+module Overtone.Game.Program
 
 open Overtone.Game.Config
 open Overtone.Resources
 
 [<EntryPoint>]
 let main(args: string[]): int =
-    let discRoot = args[0]
+    let discRoot = "C:\\toneIso"// args[0]
 
     GameState.discRoot <- discRoot
     GameState.init(discRoot)
