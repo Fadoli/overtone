@@ -33,27 +33,31 @@ type GameController (lifetime: Lifetime, device: GraphicsDevice, textureManager:
         currentScene <- SceneFactory.GetScene(sceneId, lifetime, device, textureManager)
 
     member this.event(id: int, id2: int, id3: int) : unit =
-        // Disable further interactions
-        canInteract <- false
-        match (id, id2) with
-        | (1, id) -> this.changeSceneId id // Only 0 and 4 are actually used. event 5-0 should be 1-1
-        | (2, _) -> exit 0
-        | (5, _) ->
-            // Reinit game state
-            GameState.currentRace <- -1
-            GameState.currentDifficulty <- 0
-            GameState.currentMapSize <- 0
-            this.changeSceneId Scenes.NewGame
-        | (52, _) ->
-            if (GameState.StartGame()) then
-                this.changeSceneId Scenes.IslandsView
-        | (53, _) -> GameState.ChangeWorldSize()
-        | (55, _) -> GameState.ChangeDifficulty()
-        | (60, -1) -> GameState.SelectRace(0)
-        | (61, -1) -> GameState.SelectRace(1)
-        | (62, -1) -> GameState.SelectRace(2)
-        | (63, -1) -> GameState.SelectRace(3)
-        | any -> printfn "unhandled event %d - %d - %d" id id2 id3
+        // Skip 0,0,0
+        if (id = 0) then
+            ()
+        else
+            // Disable further interactions
+            canInteract <- false
+            match (id, id2) with
+            | (1, id) -> this.changeSceneId id // Only 0 and 4 are actually used. event 5-0 should be 1-1
+            | (2, _) -> exit 0
+            | (5, _) ->
+                // Reinit game state
+                GameState.currentRace <- -1
+                GameState.currentDifficulty <- 0
+                GameState.currentMapSize <- 0
+                this.changeSceneId Scenes.NewGame
+            | (52, _) ->
+                if (GameState.StartGame()) then
+                    this.changeSceneId Scenes.IslandsView
+            | (53, _) -> GameState.ChangeWorldSize()
+            | (55, _) -> GameState.ChangeDifficulty()
+            | (60, -1) -> GameState.SelectRace(0)
+            | (61, -1) -> GameState.SelectRace(1)
+            | (62, -1) -> GameState.SelectRace(2)
+            | (63, -1) -> GameState.SelectRace(3)
+            | any -> printfn "unhandled event %d - %d - %d" id id2 id3
 
     member this.Update(time: GameTime, mouseState: MouseState) : unit =
         if canInteract then
@@ -63,7 +67,8 @@ type GameController (lifetime: Lifetime, device: GraphicsDevice, textureManager:
             |> Array.iter (fun (a, b, c) -> this.event (a, b, c))
         // We can only interact when we release the button
         canInteract <- (mouseState.LeftButton = ButtonState.Released)
-        currentScene.Update(time, mouseState)
+        // Allows event to happen in the scenes as well
+        this.event(currentScene.Update(time, mouseState))
 
     member _.Draw() : unit =
         use batch = new SpriteBatch(device)

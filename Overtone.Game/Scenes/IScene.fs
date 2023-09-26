@@ -7,4 +7,4 @@ open Microsoft.Xna.Framework.Input
 type IScene =
     abstract member Draw: SpriteBatch -> unit
     abstract member DrawBackground: SpriteBatch -> unit
-    abstract member Update: GameTime * MouseState -> unit 
+    abstract member Update: GameTime * MouseState -> (int*int*int) 

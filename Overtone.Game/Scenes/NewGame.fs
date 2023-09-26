@@ -54,8 +54,9 @@ type NewGame (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textur
                 let angle = MathHelper.ToRadians(90f * (float32)x)
                 batch.Draw(glyph.texture, glyph.offset + baseOffset + Vector2(glyphDist*cos(angle),glyphDist*sin(angle)), colorMask)
 
-        member _.Update(time: GameTime, mouse: MouseState): unit =
+        member _.Update(time: GameTime, mouse: MouseState): (int*int*int) =
             sparkles.Update(time)
+            (0,0,0)
 
 // Ressources to display :
 

@@ -25,5 +25,6 @@ type MainMenu (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textu
         member _.Draw(batch: SpriteBatch): unit =
             title.Draw(batch)
 
-        member _.Update(time: GameTime, mouse: MouseState): unit =
+        member _.Update(time: GameTime, mouse: MouseState):  (int*int*int) =
             sparkles.Update(time)
+            (0,0,0)
