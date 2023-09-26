@@ -15,7 +15,7 @@ type Empty () =
 
         member _.Draw(batch: SpriteBatch): unit = ()
 
-        member _.Update(time: GameTime, mouse: MouseState): unit = ()
+        member _.Update(time: GameTime, mouse: MouseState): (int*int*int) = (0,0,0)
 
 // Ressources to display :
 

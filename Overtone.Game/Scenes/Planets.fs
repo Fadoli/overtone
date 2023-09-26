@@ -21,6 +21,7 @@ type Planets (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textur
     let colorMask = Color.White
     let mutable currentFrame = 0
     let mutable mouseState:MouseState = new MouseState()
+    let mutable hoveredPlanet:int = 0
 
     interface IScene with
 
@@ -42,6 +43,7 @@ type Planets (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textur
                 let position = baseOffset + Vector2(sin(angle)*dist, cos(angle)*dist/2.5f)
                 if (position-Vector2((float32)mouseState.X, (float32)mouseState.Y)).Length() < 32f && island.isVisible then
                     currentPlanet <- IslandsRendering[renderedIndex + 2*GameData.IslandsCount]
+                    hoveredPlanet <- island.shapeIndexDisplayed
                 batch.Draw(
                     currentPlanet.texture,
                     currentPlanet.offset+position,
@@ -51,9 +53,14 @@ type Planets (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textur
             currentFrame <- currentFrame + 1
             ()
 
-        member _.Update(time: GameTime, mouse: MouseState): unit =
+        member _.Update(time: GameTime, mouse: MouseState): (int*int*int) =
             mouseState <- mouse
             sparkles.Update(time)
+
+            if (mouse.LeftButton = ButtonState.Pressed) then
+                (0,0,0)
+            else
+                (0,0,0)
 
 // Planet img : SMISLE
 // Planet count/position : https://github.com/Fadoli/ToneRebellion_Raw/blob/master/original_content/WORLDPOS.TXT
