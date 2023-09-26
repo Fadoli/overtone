@@ -18,7 +18,8 @@ module GameState =
     let mutable currentMapSize: int = 0
     let mutable discRoot: string = ""
     let mutable disc: Option<GameDisc> = None
-
+    
+    let islands: IslandsConfiguration= new IslandsConfiguration()
     let mutable soundsConfig: SoundsConfiguration= new SoundsConfiguration(Map.empty)
     let mutable shapesConfig: ShapesConfiguration= new ShapesConfiguration(Map.empty)
 
@@ -27,7 +28,6 @@ module GameState =
         discRoot <- rootPath
         let currentDisc = new GameDisc(rootPath)
         disc <- Some(currentDisc)
-        let islands = new IslandsConfiguration()
         islands.Read <| currentDisc.GetData "data\\worldpos.txt"
         soundsConfig <- SoundsConfiguration.Read <| currentDisc.GetConfig "sound.txt"
         shapesConfig <- ShapesConfiguration.Read <| currentDisc.GetConfig "shapes.txt"
@@ -60,3 +60,14 @@ module GameState =
             currentRace <- -1
         else
             currentRace <- newRace
+
+    let StartGame(): bool =
+        
+        islands.worlds[currentMapSize].islands
+        |> Seq.iter (fun (island) -> island.isVisible <- false)
+        // Change only if a race is selected !
+        if (currentRace <> -1) then
+            islands.worlds[currentMapSize].islands[currentRace].isVisible <- true
+            true
+        else
+            false

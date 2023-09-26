@@ -13,8 +13,6 @@ let main(args: string[]): int =
 
     GameState.discRoot <- discRoot
     GameState.init(discRoot)
-    let islands = new IslandsConfiguration()
-    islands.Read <| GameState.getDisc().GetData "data\\worldpos.txt"
 
     let soundsConfig = SoundsConfiguration.Read <| GameState.getDisc().GetConfig "sound.txt"
     let shapesConfig = ShapesConfiguration.Read <| GameState.getDisc().GetConfig "shapes.txt"
