@@ -3,6 +3,7 @@ namespace Overtone.Game.Config
 open System
 open System.IO
 open System.Text
+open System.Collections.Generic;
 open Overtone.Resources
 open Overtone.Utils.Constants
 
@@ -37,38 +38,39 @@ type IslandData (shapedId: int, distance: int, baseAngle: int)=
     member _.shapeIndexDisplayed=shapedId
     member _.shapeIndexHidden=shapedId + GameData.IslandsCount
     member _.shapeIndexHovered=shapedId + GameData.IslandsCount*2
-    member _.distance=distance
-    member _.baseAngle=baseAngle
+    member _.distance=(float32)distance
+    member _.baseAngle=(float32)baseAngle
+    member val isVisible:bool = false with get,set
 
 type WorldDefinition ()=
-    member _.IslandData=0
-
-    member _.islands: ResizeArray<IslandData> = new ResizeArray<IslandData>()
+    member val islands: ResizeArray<IslandData> = new ResizeArray<IslandData>()
 
     member this.addIslandEntry(angle:int, distance:int, shapeid:int)=
         this.islands.Add(new IslandData(shapeid,distance,angle))
 
 type IslandsConfiguration() =
+    
+    member val worlds: ResizeArray<WorldDefinition> = new ResizeArray<WorldDefinition>()
 
-    let mutable currentId = 0
-    let mutable currentIsland = 0
-
-    member _.Read(shapesTxt: byte[]): unit =
-
+    member this.Read(shapesTxt: byte[]): unit =
+        
+        let mutable currentId = 0
+        let mutable currentIsland = 0
         let mutable currentWorldEdition = new WorldDefinition()
-        let mutable islandData = new IslandData(0,0,0)
 
         let parseline(line:string):unit =
             let components = line.Split([| ' '; '\t' |], 4, StringSplitOptions.RemoveEmptyEntries)
             match components with
             | [|"-1"|] ->
                 currentId <- currentId + 1
-                printfn($"Switch to world size {currentId}")
+                this.worlds.Add(currentWorldEdition)
+                currentWorldEdition <- new WorldDefinition()
                 currentIsland <- 0
             | [|bridgeFrom; bridgeTo|] -> printfn($"{bridgeFrom} -> {bridgeTo}")
             | [|angle; distance; _; shapeid|] ->
                 printfn($"Island {currentIsland} shape : {shapeid} at angle {angle}, distance {distance}")
                 currentIsland <- currentIsland + 1
+                currentWorldEdition.addIslandEntry(angle|> int,distance|> int,shapeid|> int)
             | _ -> printfn($"noop : {line}")
 
         shapesTxt

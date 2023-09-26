@@ -45,9 +45,8 @@ type GameController (lifetime: Lifetime, device: GraphicsDevice, textureManager:
             GameState.currentMapSize <- 0
             this.changeSceneId Scenes.NewGame
         | (52, _) ->
-            // Change only if a race is selected !
-            if (GameState.currentRace <> -1) then
-                this.changeSceneId Scenes.IslandsView 
+            if (GameState.StartGame()) then
+                this.changeSceneId Scenes.IslandsView
         | (53, _) -> GameState.ChangeWorldSize()
         | (55, _) -> GameState.ChangeDifficulty()
         | (60, -1) -> GameState.SelectRace(0)
