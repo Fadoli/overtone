@@ -4,10 +4,9 @@ open JetBrains.Lifetimes
 open Microsoft.Xna.Framework
 open Microsoft.Xna.Framework.Input
 
-open Overtone.Game.Constants
+open Overtone.Utils.Constants
 open Overtone.Game.Config
-open Overtone.Game.Input
-open Overtone.Game.Windows
+open Overtone.Game.Controller
 open Overtone.Resources
 
 type OvertoneGame(disc: GameDisc, shapesConfig: ShapesConfiguration, windowConfig: WindowsConfiguration) as this =
@@ -23,7 +22,7 @@ type OvertoneGame(disc: GameDisc, shapesConfig: ShapesConfiguration, windowConfi
         this.GraphicsDevice,
         (disc.ReadFile "THING1/FLOAT.EXE").Result // TODO[#35]: Show a loader at start instead of .Result
     )
-    let scene = lazy MainScene(lifetime, this.GraphicsDevice, textureManager.Value, windowConfig)
+    let scene = lazy GameController(lifetime, this.GraphicsDevice, textureManager.Value, windowConfig)
 
     override this.Initialize() =
         this.Window.Title <- "Overtone"

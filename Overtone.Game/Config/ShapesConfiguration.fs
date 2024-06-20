@@ -1,4 +1,4 @@
-﻿namespace Overtone.Game.Config
+namespace Overtone.Game.Config
 
 open Overtone.Resources
 
@@ -8,9 +8,13 @@ type ShapesConfiguration(names: Map<string, string>) =
         shapesTxt
         |> TextConfiguration.extractLines
         |> Seq.map TextConfiguration.readKeyValueEntry
-        |> Seq.map(fun(a, b) -> b, a)
+        |> Seq.map(fun(a, b) -> b.ToUpper(), a.ToUpper())
         |> Map.ofSeq
         |> ShapesConfiguration
 
     member _.GetShapeName(shapeId: string): string =
-        names[shapeId]
+        // printfn "Loading shape : %s" shapeId
+        if names.ContainsKey shapeId then
+            names[shapeId]
+        else
+            shapeId

@@ -1,4 +1,4 @@
-﻿namespace Overtone.Game.Input
+namespace Overtone.Game.Controller
 
 open JetBrains.Lifetimes
 open Microsoft.Xna.Framework
@@ -7,6 +7,7 @@ open Microsoft.Xna.Framework.Input
 
 open Overtone.Game
 open Overtone.Resources
+open Overtone.Game.Controller
 
 type Mouse(cursors: Map<CursorShape, MouseCursor>) =
 
@@ -14,7 +15,7 @@ type Mouse(cursors: Map<CursorShape, MouseCursor>) =
 
     let mutable cursorParameters = None
 
-    member _.UpdateCursor(state: MouseState, scene: IScene, game: Game): unit =
+    member _.UpdateCursor(state: MouseState, scene: IController, game: Game): unit =
         let newCursorParameters = scene.GetCursor state
         if cursorParameters <> Some newCursorParameters then
             cursorParameters <- Some newCursorParameters
@@ -28,7 +29,7 @@ module Mouse =
     let Load(lifetime: Lifetime, device: GraphicsDevice, floatExeFile: byte[]): Mouse =
         let loadTexture(cursor: Cursor.CursorStructure) =
             use bitmap = Cursor.Render cursor
-            let texture = bitmap |> Textures.toTexture(lifetime, device)
+            let texture = Textures.toTexture(bitmap, lifetime, device)
             MouseCursor.FromTexture2D(texture, int cursor.HotspotX, int cursor.HotspotY)
 
         let allCursors =

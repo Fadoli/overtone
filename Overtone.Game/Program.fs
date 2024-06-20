@@ -1,16 +1,21 @@
-﻿module Overtone.Game.Program
+module Overtone.Game.Program
 
 open Overtone.Game.Config
 open Overtone.Resources
 
 [<EntryPoint>]
 let main(args: string[]): int =
-    let discRoot = args[0]
+    let discRoot = "C:\\toneIso"// args[0]
 
-    use disc = new GameDisc(discRoot)
-    let shapesConfig = ShapesConfiguration.Read <| disc.GetConfig "shapes.txt"
-    let windowsConfig = WindowsConfiguration.Read <| disc.GetConfig "windows.txt"
+    GameState.discRoot <- discRoot
+    GameState.init(discRoot)
 
-    use game = new OvertoneGame(disc, shapesConfig, windowsConfig)
+    let soundsConfig = SoundsConfiguration.Read <| GameState.getDisc().GetConfig "sound.txt"
+    let shapesConfig = ShapesConfiguration.Read <| GameState.getDisc().GetConfig "shapes.txt"
+    let windowsConfig = WindowsConfiguration.Read <| GameState.getDisc().GetConfig "windows.txt"
+
+    use game = new OvertoneGame(GameState.getDisc(), shapesConfig, windowsConfig)
+    let mainTheme = soundsConfig.GetSoundPerName("START.WAV",GameState.getDisc())
+    mainTheme.Play() |> ignore
     game.Run()
     0
