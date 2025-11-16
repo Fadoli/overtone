@@ -13,6 +13,7 @@ open Overtone.Resources
 //
 
 module GameState =
+    let mutable currentPlanetId: int = -1
     let mutable currentRace: int = -1
     let mutable currentDifficulty: int = 0
     let mutable currentMapSize: int = 0

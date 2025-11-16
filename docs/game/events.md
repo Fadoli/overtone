@@ -28,6 +28,7 @@ Note : this list is most likely not complete
 | 1-0 | LOAD/SAVE (state 4-5) |
 | 1-4 | change to state 4 (load game view) |
 | 2 | Exit the game |
+| 8003 | --CUSTOM EVENT-- Switch to planet view 3, Param1 is planetId |
 | 5 | Change to state 1 (game creation view) |
 
 ## MASTER

@@ -12,6 +12,10 @@ open Microsoft.Xna.Framework.Input
 open Overtone.Game
 open Overtone.Game.Config
 
+// Planet img : SMISLE
+// Planet count/position : https://github.com/Fadoli/ToneRebellion_Raw/blob/master/original_content/WORLDPOS.TXT
+// game size is 640x480
+
 type Planets (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textures.Manager) =
     
     // Gotta love sparkles !
@@ -29,6 +33,7 @@ type Planets (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textur
             sparkles.Draw(batch)
 
         member _.Draw(batch: SpriteBatch): unit =
+            hoveredPlanet <- 0
             let baseOffset = Vector2(320f,240f)
             let baseAngle = (float32)currentFrame/12f
             world.islands
@@ -57,11 +62,15 @@ type Planets (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textur
             mouseState <- mouse
             sparkles.Update(time)
 
-            if (mouse.LeftButton = ButtonState.Pressed) then
-                (0,0,0)
+            // Check for planet click
+            if mouse.LeftButton = ButtonState.Pressed then
+                // Find hovered planet
+                let hovered = hoveredPlanet
+                if hovered <> 0 then
+                    // Register planet id and switch to state 3 (GameView)
+                    Overtone.Game.GameState.currentPlanetId <- hovered
+                    (8003, hovered, 0) // 8003 is our custom event for planet selection
+                else
+                    (0,0,0)
             else
                 (0,0,0)
-
-// Planet img : SMISLE
-// Planet count/position : https://github.com/Fadoli/ToneRebellion_Raw/blob/master/original_content/WORLDPOS.TXT
-// game size is 640x480
