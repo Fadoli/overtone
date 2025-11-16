@@ -64,6 +64,10 @@ type GameController (lifetime: Lifetime, device: GraphicsDevice, textureManager:
                 // Custom event: planet selected in planet view
                 Overtone.Game.GameState.currentPlanetId <- planetId
                 this.changeSceneId Scenes.GameView
+            | (2000, _) ->
+                // Go to map/planet selection view
+                this.changeSceneId Scenes.IslandsView
+                Overtone.Game.GameState.currentPlanetId <- -1
             | any -> printfn "unhandled event %d - %d - %d" id id2 id3
 
     member this.Update(time: GameTime, mouseState: MouseState) : unit =
