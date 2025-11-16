@@ -25,7 +25,7 @@ type Planets (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textur
     let colorMask = Color.White
     let mutable currentFrame = 0
     let mutable mouseState:MouseState = new MouseState()
-    let mutable hoveredPlanet:int = 0
+    let mutable hoveredPlanet:int = -1
 
     interface IScene with
 
@@ -33,7 +33,7 @@ type Planets (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textur
             sparkles.Draw(batch)
 
         member _.Draw(batch: SpriteBatch): unit =
-            hoveredPlanet <- 0
+            hoveredPlanet <- -1
             let baseOffset = Vector2(320f,240f)
             let baseAngle = (float32)currentFrame/12f
             world.islands
@@ -66,7 +66,7 @@ type Planets (lifetime: Lifetime, device: GraphicsDevice, textureManager: Textur
             if mouse.LeftButton = ButtonState.Pressed then
                 // Find hovered planet
                 let hovered = hoveredPlanet
-                if hovered <> 0 then
+                if hovered <> -1 then
                     // Register planet id and switch to state 3 (GameView)
                     Overtone.Game.GameState.currentPlanetId <- hovered
                     (8003, hovered, 0) // 8003 is our custom event for planet selection
