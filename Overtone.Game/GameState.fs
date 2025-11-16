@@ -20,18 +20,35 @@ module GameState =
     let mutable disc: Option<GameDisc> = None
     
     let islands: IslandsConfiguration= new IslandsConfiguration()
+
+    // Mutable variables for description configurations
+    let mutable helpDescriptions: DescriptionConfiguration = DescriptionConfiguration(Map.empty)
+    let mutable buildingNamesDescriptions: DescriptionConfiguration = DescriptionConfiguration(Map.empty)
+    let mutable buildingDescriptions: DescriptionConfiguration = DescriptionConfiguration(Map.empty)
+    let mutable glyphsDescriptions: DescriptionConfiguration = DescriptionConfiguration(Map.empty)
+    let mutable newGameEventsDescriptions: DescriptionConfiguration = DescriptionConfiguration(Map.empty)
+    let mutable newGameTribeDescriptions: DescriptionConfiguration = DescriptionConfiguration(Map.empty)
+    let mutable inGameTextDescriptions: DescriptionConfiguration = DescriptionConfiguration(Map.empty)
+
     let mutable soundsConfig: SoundsConfiguration= new SoundsConfiguration(Map.empty)
     let mutable shapesConfig: ShapesConfiguration= new ShapesConfiguration(Map.empty)
 
 
-    let init(rootPath): unit=
+    let init(rootPath): unit =
         discRoot <- rootPath
         let currentDisc = new GameDisc(rootPath)
         disc <- Some(currentDisc)
-        islands.Read <| currentDisc.GetData "data\\worldpos.txt"
+        islands.Read <| currentDisc.GetData "data\worldpos.txt"
         soundsConfig <- SoundsConfiguration.Read <| currentDisc.GetConfig "sound.txt"
         shapesConfig <- ShapesConfiguration.Read <| currentDisc.GetConfig "shapes.txt"
-        // windowsConfig <- WindowsConfiguration.Read <| currentDisc.GetConfig "windows.txt"
+        // Load all description files after disc is initialized
+        helpDescriptions <- DescriptionConfiguration.Read(currentDisc.GetConfig "tonehelp.txt")
+        buildingNamesDescriptions <- DescriptionConfiguration.Read(currentDisc.GetConfig "bldname.txt")
+        buildingDescriptions <- DescriptionConfiguration.Read(currentDisc.GetConfig "bldtxt.txt")
+        glyphsDescriptions <- DescriptionConfiguration.Read(currentDisc.GetConfig "plotobj.txt")
+        newGameEventsDescriptions <- DescriptionConfiguration.Read(currentDisc.GetConfig "newtext.txt")
+        newGameTribeDescriptions <- DescriptionConfiguration.Read(currentDisc.GetConfig "newgame.txt")
+        inGameTextDescriptions <- DescriptionConfiguration.Read(currentDisc.GetConfig "gamey.txt")
 
     let getDisc(): GameDisc=
         match disc with
