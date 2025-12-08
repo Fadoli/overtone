@@ -4,6 +4,7 @@
 
 namespace Overtone.Game.Config
 
+open Overtone.Resources
 
 // The file looks like that for :
 //
